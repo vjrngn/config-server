@@ -1,0 +1,4 @@
+color: true
+extension:
+  - "test.js"
+recursive: true
