@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-const app = require("../src/main");
+const app = require("../src/main")();
 const logger = require("../src/logging/logger");
 const http = require("http");
 
