@@ -1,80 +1,35 @@
-const app = require("./main")();
-const logger = require("./logging/logger");
-const http = require("http");
+import { Server } from 'http';
+import { Application } from 'express';
 
-/**
- * Get port from environment and store in Express.
- */
+require('dotenv').config();
+const http = require('http');
+const initApp = require('./main');
 
-const port = normalizePort(process.env.PORT || "3000");
-app.set("port", port);
+initApp(process.env).then((app: Application) => {
+  /**
+   * Get port from environment and store in Express.
+   */
+  const port = process.env.PORT || 3000;
+  app.set('port', port);
 
-/**
- * Create HTTP server.
- */
+  /**
+   * Create HTTP server.
+   */
+  const server: Server = http.createServer(app);
 
-const server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
-server.on("error", onError);
-server.on("listening", onListening);
-
-/**
- * Normalize a port into a number, string, or false.
- */
-
-function normalizePort(val: string) {
-  const port = parseInt(val, 10);
-
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
-
-  if (port >= 0) {
-    // port number
-    return port;
-  }
-
-  return false;
-}
-
-/**
- * Event listener for HTTP server "error" event.
- */
-
-function onError(error: any) {
-  if (error.syscall !== "listen") {
-    throw error;
-  }
-
-  const bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
-
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case "EACCES":
-      console.error(bind + " requires elevated privileges");
+  /**
+   * Listen on provided port, on all network interfaces.
+   */
+  server.listen(port);
+  server.on('error', (error: any) => {
+    if (error.code === 'EADDRINUSE') {
+      console.error(`${process.env.PORT} is already in use`);
       process.exit(1);
-      break;
-    case "EADDRINUSE":
-      console.error(bind + " is already in use");
-      process.exit(1);
-      break;
-    default:
+    } else {
       throw error;
-  }
-}
-
-/**
- * Event listener for HTTP server "listening" event.
- */
-
-function onListening() {
-  const addr = server.address();
-  const bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
-  logger.info("Listening on " + bind);
-}
+    }
+  });
+  server.on('listening', () => {
+    console.log(`Server listening on port ${port}`);
+  });
+});

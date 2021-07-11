@@ -1,28 +1,17 @@
-const knex = require("knex");
+import { createConnection, Connection } from 'typeorm';
+require('dotenv').config();
 
-const {
-  APP_ENV,
-  DB_HOST,
-  DB_PORT,
-  DB_USERNAME,
-  DB_PASSWORD,
-  DB_NAME,
-  DB_POOL_MIN = 1,
-  DB_POOL_MAX = 3,
-} = process.env;
-
-export default knex({
-  client: "pg",
-  debug: APP_ENV === "dev",
-  connection: {
+export function connect (config: any): Promise<Connection> {
+  const { APP_ENV, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } =
+    config;
+  return createConnection({
+    type: 'postgres',
     host: DB_HOST,
-    port: DB_PORT,
-    user: DB_USERNAME,
+    port: parseInt(DB_PORT!),
+    username: DB_USER,
     password: DB_PASSWORD,
     database: DB_NAME,
-  },
-  pool: {
-    min: DB_POOL_MIN,
-    max: DB_POOL_MAX,
-  },
-});
+    entities: [__dirname, '../entities/*.ts'],
+    logging: APP_ENV === 'dev'
+  });
+}

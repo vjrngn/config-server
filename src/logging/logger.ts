@@ -1,4 +1,4 @@
-import { createLogger, format, transports } from "winston";
+import { createLogger, format, transports } from 'winston';
 
 module.exports = createLogger({
   format: format.combine(
@@ -9,9 +9,9 @@ module.exports = createLogger({
     /** print stack trace as part of the log */
     format.errors({ stack: true }),
     /** custom log format. */
-    format.printf(function customFormat({ level, message, timestamp, stack }) {
+    format.printf(function customFormat ({ level, message, timestamp, stack }) {
       return `[${timestamp}][${level}]: ${stack || message}`;
     })
   ),
-  transports: [new transports.Console()],
+  transports: [new transports.Console()]
 });
