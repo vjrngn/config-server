@@ -1,6 +1,9 @@
-# IDE crap
-.vscode
-.idea
+# IDE
+.vscode/
+.idea/
+
+# Compiled files
+dist/
 
 # Logs
 logs
