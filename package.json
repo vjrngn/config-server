@@ -7,7 +7,6 @@
     "start": "tsc && node dist/server.js",
     "start:dev": "nodemon src/server.ts",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "migrate:init": "knex init",
     "migrate:make": "knex migrate:make",
     "migrate:up": "knex migrate:latest",
     "migrate:down": "knex migrate:down",
@@ -20,6 +19,7 @@
     "http-errors": "~1.6.2",
     "morgan": "~1.9.0",
     "pg": "^8.6.0",
+    "reflect-metadata": "^0.1.13",
     "twig": "~0.10.3",
     "typeorm": "^0.2.34",
     "winston": "^3.3.3"

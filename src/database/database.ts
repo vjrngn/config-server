@@ -1,17 +1,19 @@
 import { createConnection, Connection } from 'typeorm';
-require('dotenv').config();
+import { ApplicationConfiguration } from '../config/config';
 
-export function connect (config: any): Promise<Connection> {
-  const { APP_ENV, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } =
-    config;
+export function connect (config: ApplicationConfiguration): Promise<Connection> {
+  const {
+    database: { host, port, username, password, name },
+    environment
+  } = config;
   return createConnection({
     type: 'postgres',
-    host: DB_HOST,
-    port: parseInt(DB_PORT!),
-    username: DB_USER,
-    password: DB_PASSWORD,
-    database: DB_NAME,
+    host,
+    port,
+    username,
+    password,
+    database: name,
     entities: [__dirname, '../entities/*.ts'],
-    logging: APP_ENV === 'dev'
+    logging: environment === 'dev'
   });
 }

@@ -1,11 +1,11 @@
 import { Server } from 'http';
 import { Application } from 'express';
+import { config } from './config/config';
 
-require('dotenv').config();
 const http = require('http');
 const initApp = require('./main');
 
-initApp(process.env).then((app: Application) => {
+initApp(config).then((app: Application) => {
   /**
    * Get port from environment and store in Express.
    */
