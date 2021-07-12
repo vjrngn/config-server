@@ -1,22 +1,26 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table, TableUnique } from 'typeorm';
 
-const TABLE_NAME = 'teams';
+const TABLE_NAME = 'team_members';
 
-export class CreateTeamsTable1626060296735 implements MigrationInterface {
+export class CreateTeamMembersTable1626068632419 implements MigrationInterface {
   public async up (queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
         name: TABLE_NAME,
         columns: [
           {
-            name: 'id',
+            name: 'team_id',
             type: 'varchar',
-            isPrimary: true
+            isNullable: false
+          },
+          {
+            name: 'user_id',
+            type: 'varchar',
+            isNullable: false
           },
           {
             name: 'name',
-            type: 'varchar',
-            isUnique: true
+            type: 'varchar'
           },
           {
             name: 'created_at',
@@ -31,6 +35,8 @@ export class CreateTeamsTable1626060296735 implements MigrationInterface {
         ]
       })
     );
+
+    await queryRunner.createPrimaryKey(TABLE_NAME, ['team_id', 'user_id']);
   }
 
   public async down (queryRunner: QueryRunner): Promise<void> {
