@@ -1,4 +1,9 @@
+require: 'ts-node/register'
 color: true
+diff: true
 extension:
-  - "test.js"
+  - "test.ts"
 recursive: true
+timeout: 30000
+spec:
+  - 'test/**/*.test.ts'
