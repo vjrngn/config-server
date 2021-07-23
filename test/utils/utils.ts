@@ -4,7 +4,11 @@ import { join } from 'path';
 
 const PROJECT_ROOT = join(__dirname, '..', '..');
 
-export function connect (container: StartedTestContainer): Promise<Connection> {
+export interface ConnectionOptions {
+    logging?: boolean;
+}
+
+export function connect (container: StartedTestContainer, options?: ConnectionOptions): Promise<Connection> {
   return createConnection({
     type: 'postgres',
     host: container.getHost(),
@@ -13,6 +17,7 @@ export function connect (container: StartedTestContainer): Promise<Connection> {
     password: 'password',
     database: 'test',
     migrations: [join(PROJECT_ROOT, 'migrations/*.ts')],
-    entities: [join(PROJECT_ROOT, 'src', 'entities/*.ts')]
+    entities: [join(PROJECT_ROOT, 'src', 'entities/*.ts')],
+    logging: options?.logging
   });
 }

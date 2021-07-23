@@ -5,9 +5,9 @@ import { BadInputException } from './exceptions/BadInputException';
 
 @EntityRepository(Team)
 export class TeamRepository extends Repository<Team> {
-  async createTeam (options: { name: string }): Promise<Team> {
+  async createTeam (options: { name: string, members?: string[] }): Promise<Team> {
     if (!options.name || options.name.length === 0) {
-      throw new BadInputException('name attribute is required');
+      throw new BadInputException('name is required');
     }
 
     return this.save({

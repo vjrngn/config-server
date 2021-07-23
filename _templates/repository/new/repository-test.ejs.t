@@ -1,15 +1,16 @@
+---
+to: test/repositories/<%= h.changeCase.paramCase(entity).toLowerCase() %>-repository.test.ts
+---
 import { expect } from 'chai';
-// @ts-ignore
 import { connect } from '../utils/utils';
 import { GenericContainer, StartedTestContainer } from 'testcontainers';
-import { TeamRepository } from '../../src/repositories/team-repository';
 import { Connection, getConnection } from 'typeorm';
-import { BadInputException } from '../../src/repositories/exceptions/BadInputException';
+import { <%= entity %>Repository } from '../../src/repositories/<%= h.changeCase.paramCase(entity).toLowerCase() %>-repository'
 
-describe('Team Repository', function () {
+describe('<%= entity %>Repository', function () {
   let databaseConnection: Connection;
   let postgresContainer: StartedTestContainer;
-  let repository: TeamRepository;
+  let repository: <%= entity %>Repository;
 
   before(function () {
     return new GenericContainer('postgres:13')
@@ -26,30 +27,11 @@ describe('Team Repository', function () {
         databaseConnection = connection;
         return connection.runMigrations();
       }).then(() => {
-        repository = getConnection().getCustomRepository(TeamRepository);
+        repository = getConnection().getCustomRepository(<%= entity %>Repository);
       });
   });
 
   after(function () {
     return postgresContainer.stop().then(() => databaseConnection.close());
-  });
-
-  it('should create a team', function () {
-    return repository
-      .createTeam({
-        name: 'some team'
-      })
-      .then((team) => {
-        expect(team.id).to.not.equal('');
-        expect(team.name).to.equal('some team');
-      });
-  });
-
-  it('should throw error if name is blank', function () {
-    return repository.createTeam({
-      name: '   '
-    }).catch(e => {
-      expect(e).to.be.instanceOf(BadInputException);
-    });
   });
 });

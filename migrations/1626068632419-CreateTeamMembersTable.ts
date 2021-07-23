@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, Table, TableUnique } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 const TABLE_NAME = 'team_members';
 
