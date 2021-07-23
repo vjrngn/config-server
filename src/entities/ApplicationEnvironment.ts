@@ -1,5 +1,6 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 import { Application } from './Application';
+import { Configuration } from './Configuration';
 
 @Entity('application_environments')
 export class ApplicationEnvironment {
@@ -17,4 +18,7 @@ export class ApplicationEnvironment {
 
     @ManyToOne(() => Application)
     application: Application;
+
+    @OneToMany(() => Configuration, config => config.environment)
+    configurations: Configuration[];
 }
