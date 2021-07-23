@@ -1,5 +1,6 @@
-import { Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 import { TeamMember } from './TeamMember';
+import { Application } from './Application';
 
 @Entity({ name: 'teams' })
 export class Team {
@@ -16,4 +17,7 @@ export class Team {
     updatedAt: Date;
 
     members: TeamMember[];
+
+    @OneToMany(() => Application, application => application.team)
+    applications: Application[];
 }

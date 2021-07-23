@@ -20,6 +20,12 @@ module.exports = {
       rules: {
         'no-unused-expressions': 'off'
       }
+    },
+    {
+      files: ['src/entities/*.ts'],
+      rules: {
+        'camelcase': 'off'
+      }
     }
   ]
 };

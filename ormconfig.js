@@ -9,6 +9,7 @@ module.exports = {
   database: DB_NAME,
   migrations: [__dirname, 'migrations/*.ts'],
   cli: {
-    migrationsDir: 'migrations'
+    migrationsDir: 'migrations',
+    entitiesDir: 'src/entities'
   }
 };
