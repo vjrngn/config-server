@@ -19,10 +19,6 @@ export class CreateTeamMembersTable1626068632419 implements MigrationInterface {
             isNullable: false
           },
           {
-            name: 'name',
-            type: 'varchar'
-          },
-          {
             name: 'created_at',
             type: 'timestamp',
             default: 'CURRENT_TIMESTAMP'

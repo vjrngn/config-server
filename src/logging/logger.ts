@@ -1,6 +1,6 @@
 import { createLogger, format, transports } from 'winston';
 
-module.exports = createLogger({
+export default createLogger({
   format: format.combine(
     /** add colored log levels */
     format.colorize(),
