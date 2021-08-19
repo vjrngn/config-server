@@ -5,14 +5,15 @@ module.exports = {
     browser: false,
     commonjs: true,
     es2021: true,
-    mocha: true
+    mocha: true,
   },
   extends: ['standard'],
   parserOptions: {
     ecmaVersion: 12
   },
   rules: {
-    semi: ['error', 'always']
+    semi: ['error', 'always'],
+    'space-before-function-paren': 'off'
   },
   overrides: [
     {
@@ -24,7 +25,7 @@ module.exports = {
     {
       files: ['src/entities/*.ts'],
       rules: {
-        'camelcase': 'off'
+        camelcase: 'off'
       }
     }
   ]
