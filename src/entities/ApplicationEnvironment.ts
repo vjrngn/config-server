@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 import { Application } from './Application';
 import { Configuration } from './Configuration';
 
@@ -10,13 +10,15 @@ export class ApplicationEnvironment {
     @Column()
     name: string;
 
+    @Column()
+    application_id: string;
+
     @CreateDateColumn({ type: 'timestamp' })
     created_at: Date
 
     @UpdateDateColumn({ type: 'timestamp' })
     updated_at: Date
 
-    @ManyToOne(() => Application)
     application: Application;
 
     @OneToMany(() => Configuration, config => config.environment)

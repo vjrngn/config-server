@@ -1,7 +1,6 @@
-import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 const TABLE_NAME = 'configurations';
-const APP_ENV_ID_FK = 'fk_application_environment_id';
 
 export class CreateConfigurationsTable1627074236346 implements MigrationInterface {
   public async up (queryRunner: QueryRunner): Promise<void> {
@@ -45,18 +44,9 @@ export class CreateConfigurationsTable1627074236346 implements MigrationInterfac
         }
       ]
     }));
-
-    await queryRunner.createForeignKey(TABLE_NAME, new TableForeignKey({
-      name: APP_ENV_ID_FK,
-      columnNames: ['application_environment_id'],
-      referencedTableName: 'application_environments',
-      referencedColumnNames: ['id'],
-      onDelete: 'CASCADE'
-    }));
   }
 
   public async down (queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropForeignKey(TABLE_NAME, APP_ENV_ID_FK);
     await queryRunner.dropTable(TABLE_NAME);
   }
 }

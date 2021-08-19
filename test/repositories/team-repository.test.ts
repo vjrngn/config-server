@@ -1,10 +1,10 @@
 import { expect } from 'chai';
-// @ts-ignore
-import { connect } from '../utils/utils';
 import { GenericContainer, StartedTestContainer } from 'testcontainers';
-import { TeamRepository } from '../../src/repositories/team-repository';
 import { Connection, getConnection } from 'typeorm';
 import { BadInputException } from '../../src/repositories/exceptions/BadInputException';
+import { TeamRepository } from '../../src/repositories/team-repository';
+// @ts-ignore
+import { connect } from '../utils/utils';
 
 describe('Team Repository', function () {
   let databaseConnection: Connection;
@@ -54,7 +54,7 @@ describe('Team Repository', function () {
     const team = await repository
       .createTeam({
         name: 'my team',
-        members: ['user-id-1', 'user-id-2'],
+        members: ['user-id-1', 'user-id-2']
       });
     const members = team.members.map((member) => {
       return {
