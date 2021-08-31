@@ -1,12 +1,14 @@
 import { expect } from 'chai';
-// @ts-ignore
-import { connect } from '../utils/utils';
+import moment from 'moment';
 import { GenericContainer, StartedTestContainer } from 'testcontainers';
 import { Connection, getConnection } from 'typeorm';
-import { ApplicationRepository } from '../../src/repositories/application-repository';
-import { ApplicationEnvironment } from '../../src/entities/ApplicationEnvironment';
+import { v4 } from 'uuid';
 import { Application } from '../../src/entities/Application';
-import moment from 'moment';
+import { ApplicationEnvironment } from '../../src/entities/ApplicationEnvironment';
+import { Team } from '../../src/entities/Team';
+import { ApplicationRepository } from '../../src/repositories/application-repository';
+// @ts-ignore
+import { connect } from '../utils/utils';
 
 describe('ApplicationRepository', function () {
   let databaseConnection: Connection;
@@ -39,15 +41,21 @@ describe('ApplicationRepository', function () {
 
   beforeEach(async () => {
     await repository.manager.transaction(async (entityManager) => {
-      await entityManager.clear(ApplicationEnvironment);
-      await entityManager.clear(Application);
+      await entityManager.delete(Team, {});
     });
   });
+
+  async function createTeam(): Promise<Team> {
+    return repository.manager.save(Team, {
+      id: v4(),
+      name: 'test team'
+    });
+  }
 
   describe('Application Creation', function () {
     it('allows a team to create a new application', async function () {
       const result = await repository.createApplication({
-        teamId: 'some-team-id',
+        teamId: (await createTeam()).id,
         name: 'Todo App'
       });
 
@@ -60,7 +68,7 @@ describe('ApplicationRepository', function () {
 
     it('adds environments during application creation', async function () {
       const result = await repository.createApplication({
-        teamId: 'some-team-id',
+        teamId: (await createTeam()).id,
         name: 'Todo App',
         environments: [
           {
@@ -87,15 +95,16 @@ describe('ApplicationRepository', function () {
     });
 
     it('returns error when a team creates a duplicate application', async function () {
+      const team = (await createTeam());
       // Given an application exists for a team
       const firstResult = await repository.createApplication({
-        teamId: 'some-team-id',
+        teamId: team.id,
         name: 'Todo App'
       });
 
       // should throw when a new one with the same name is created
       const secondResult = await repository.createApplication({
-        teamId: 'some-team-id',
+        teamId: team.id,
         name: 'Todo App'
       });
 
@@ -108,8 +117,8 @@ describe('ApplicationRepository', function () {
   describe('Application Updates', function() {
     it('updates application name', async function () {
       const result = await await repository.createApplication({
+        teamId: (await createTeam()).id,
         name: 'some name',
-        teamId: 'team-id'
       });
       const existingApp = result.data!;
       const existingAppId = existingApp.id;

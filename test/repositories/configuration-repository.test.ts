@@ -1,9 +1,11 @@
 import expect from 'expect';
 import { GenericContainer, StartedTestContainer } from 'testcontainers';
 import { Connection, getConnection } from 'typeorm';
+import { v4 } from 'uuid';
 import { Application } from '../../src/entities/Application';
 import { ApplicationEnvironment } from '../../src/entities/ApplicationEnvironment';
 import { Configuration } from '../../src/entities/Configuration';
+import { Team } from '../../src/entities/Team';
 import { ApplicationRepository } from '../../src/repositories/application-repository';
 import { ConfigurationRepository } from '../../src/repositories/configuration-repository';
 import { ConfigDataTypes } from '../../src/repositories/enum/config-data-types';
@@ -42,17 +44,25 @@ describe('ConfigurationRepository', function () {
 
   beforeEach(async () => {
     await repository.manager.transaction(async (entityManager) => {
-      await entityManager.delete(ApplicationEnvironment, {});
-      await entityManager.delete(Application, {});
-      await entityManager.delete(Configuration, {});
+      // Since teams is the starting point for all realtions, 
+      // foreign key constraints ensure all records in dependent tables
+      // are deleted.
+      await entityManager.delete(Team, {});
     });
   });
+
+  async function createTeam(): Promise<Team> {
+    return repository.manager.save(Team, {
+      id: v4(),
+      name: 'test team'
+    });
+  }
 
   async function createTestApplication(options?: {
     data: any;
   }): Promise<Result<Application | null>> {
     const data = {
-      teamId: 'some-team-id',
+      teamId: (await createTeam()).id,
       name: 'test application',
       environments: [{ name: 'staging' }]
     };

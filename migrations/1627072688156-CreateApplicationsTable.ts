@@ -1,6 +1,7 @@
-import { MigrationInterface, QueryRunner, Table, TableUnique } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table, TableForeignKey, TableUnique } from 'typeorm';
 
 const TABLE_NAME = 'applications';
+const FK_TEAM_ID = 'fk_team_id';
 
 export class CreateApplicationsTable1627072688156 implements MigrationInterface {
   public async up (queryRunner: QueryRunner): Promise<void> {
@@ -33,9 +34,17 @@ export class CreateApplicationsTable1627072688156 implements MigrationInterface 
       name: 'idx_unique_team_id_name',
       columnNames: ['team_id', 'name']
     }));
+    await queryRunner.createForeignKey(TABLE_NAME, new TableForeignKey({
+      name: FK_TEAM_ID,
+      columnNames: ['team_id'],
+      referencedColumnNames: ['id'],
+      referencedTableName: 'teams',
+      onDelete: 'CASCADE'
+    }))
   }
 
   public async down (queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropForeignKey(TABLE_NAME, FK_TEAM_ID);
     await queryRunner.dropTable(TABLE_NAME);
   }
 }
