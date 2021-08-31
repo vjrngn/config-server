@@ -4,7 +4,7 @@ const TABLE_NAME = 'application_environments';
 const FK_APPLICATION_ID = 'fk_application_id';
 
 export class CreateApplicationEnvironmentsTable1627073628656 implements MigrationInterface {
-  public async up (queryRunner: QueryRunner): Promise<void> {
+  public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(new Table({
       name: TABLE_NAME,
       columns: [
@@ -46,10 +46,10 @@ export class CreateApplicationEnvironmentsTable1627073628656 implements Migratio
       referencedColumnNames: ['id'],
       referencedTableName: 'applications',
       onDelete: 'CASCADE'
-    }))
+    }));
   }
 
-  public async down (queryRunner: QueryRunner): Promise<void> {
+  public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.dropForeignKey(TABLE_NAME, FK_APPLICATION_ID);
     await queryRunner.dropTable(TABLE_NAME);
   }

@@ -2,7 +2,9 @@
   "name": "config-server",
   "version": "0.0.0",
   "private": false,
-  "maintainers": ["Vijay Rangan"],
+  "maintainers": [
+    "Vijay Rangan"
+  ],
   "scripts": {
     "lint": "eslint . --ext .ts",
     "start": "tsc && node dist/server.js",

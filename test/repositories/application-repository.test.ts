@@ -114,11 +114,11 @@ describe('ApplicationRepository', function () {
     });
   });
 
-  describe('Application Updates', function() {
+  describe('Application Updates', function () {
     it('updates application name', async function () {
       const result = await await repository.createApplication({
         teamId: (await createTeam()).id,
-        name: 'some name',
+        name: 'some name'
       });
       const existingApp = result.data!;
       const existingAppId = existingApp.id;

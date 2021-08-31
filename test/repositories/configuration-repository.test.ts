@@ -3,8 +3,6 @@ import { GenericContainer, StartedTestContainer } from 'testcontainers';
 import { Connection, getConnection } from 'typeorm';
 import { v4 } from 'uuid';
 import { Application } from '../../src/entities/Application';
-import { ApplicationEnvironment } from '../../src/entities/ApplicationEnvironment';
-import { Configuration } from '../../src/entities/Configuration';
 import { Team } from '../../src/entities/Team';
 import { ApplicationRepository } from '../../src/repositories/application-repository';
 import { ConfigurationRepository } from '../../src/repositories/configuration-repository';
@@ -44,7 +42,7 @@ describe('ConfigurationRepository', function () {
 
   beforeEach(async () => {
     await repository.manager.transaction(async (entityManager) => {
-      // Since teams is the starting point for all realtions, 
+      // Since teams is the starting point for all realtions,
       // foreign key constraints ensure all records in dependent tables
       // are deleted.
       await entityManager.delete(Team, {});
@@ -67,7 +65,8 @@ describe('ConfigurationRepository', function () {
       environments: [{ name: 'staging' }]
     };
 
-    return applicationRepository.createApplication(options ? options!.data : data);
+    const args = options ? Object.assign(data, options!.data) : data;
+    return applicationRepository.createApplication(args);
   }
 
   describe('Configuration Creation', function () {
@@ -184,6 +183,39 @@ describe('ConfigurationRepository', function () {
 
       expect(result.error!.message)
         .toEqual('environment ID provided does not exist');
+    });
+  });
+
+  describe('Fetch Configurations', function () {
+    it('should return error if environent ID is empty', async function () {
+      const result = await repository.getAll({ environmentId: '' });
+      expect(result.error!.message).toEqual('environment ID is required');
+
+      const secondResult = await repository.getAll({ environmentId: '   ' });
+      expect(secondResult.error!.message).toEqual('environment ID is required');
+    });
+
+    it('should return empty if environment not found', async function () {
+      const result = await repository.getAll({ environmentId: 'some-env-id' });
+      expect(result.data).toHaveLength(0);
+    });
+
+    it('should return all configurations for an environment', async function () {
+      const { data: application } = await createTestApplication();
+      const envId = application!.environments[0].id;
+
+      await repository.updateConfigurations([{
+        key: 'SOME_KEY',
+        value: '0',
+        dataType: ConfigDataTypes.NUMBER,
+        environmentId: envId
+      }]);
+
+      const result = await repository.getAll({
+        environmentId: envId
+      });
+
+      expect(result.data).toHaveLength(1);
     });
   });
 });

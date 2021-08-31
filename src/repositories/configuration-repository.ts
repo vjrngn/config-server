@@ -5,9 +5,30 @@ import { UpdateConfigurationDTO } from './dto/application-configuration/update-c
 import { v4 } from 'uuid';
 import logger from '../logging/logger';
 import { FOREIGN_KEY_CONSTRAINT_VIOLATION } from './sql-codes';
+import isEmpty from 'lodash.isempty';
 
 @EntityRepository(Configuration)
 export class ConfigurationRepository extends Repository<Configuration> {
+  async getAll(data: { environmentId: string; }): Promise<Result<Configuration[] | null>> {
+    logger.debug('Attempting to fetch all configurations', {
+      data
+    });
+
+    if (isEmpty(data.environmentId.trim())) {
+      return new Result(null, {
+        message: 'environment ID is required'
+      });
+    }
+
+    const configurations = await this.find({
+      where: {
+        environment_id: data.environmentId
+      }
+    });
+
+    return new Result(configurations, null);
+  }
+
   async updateConfigurations(data: UpdateConfigurationDTO[]): Promise<Result<Configuration[] | null>> {
     logger.debug('attempting to update configurations', data);
 
@@ -77,9 +98,9 @@ export class ConfigurationRepository extends Repository<Configuration> {
 
         return new Result(null, {
           message: 'environment ID provided does not exist'
-        })
+        });
       }
-      
+
       logger.error('Exception trying to update configurations', {
         exception: e
       });

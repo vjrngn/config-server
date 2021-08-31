@@ -4,7 +4,7 @@ const TABLE_NAME = 'applications';
 const FK_TEAM_ID = 'fk_team_id';
 
 export class CreateApplicationsTable1627072688156 implements MigrationInterface {
-  public async up (queryRunner: QueryRunner): Promise<void> {
+  public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(new Table({
       name: TABLE_NAME,
       columns: [{
@@ -40,10 +40,10 @@ export class CreateApplicationsTable1627072688156 implements MigrationInterface 
       referencedColumnNames: ['id'],
       referencedTableName: 'teams',
       onDelete: 'CASCADE'
-    }))
+    }));
   }
 
-  public async down (queryRunner: QueryRunner): Promise<void> {
+  public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.dropForeignKey(TABLE_NAME, FK_TEAM_ID);
     await queryRunner.dropTable(TABLE_NAME);
   }
