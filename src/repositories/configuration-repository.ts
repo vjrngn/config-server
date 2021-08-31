@@ -3,10 +3,12 @@ import { Configuration } from '../entities/Configuration';
 import { Result } from '../result';
 import { UpdateConfigurationDTO } from './dto/application-configuration/update-configuration-dto';
 import { v4 } from 'uuid';
+import logger from '../logging/logger';
 
 @EntityRepository(Configuration)
 export class ConfigurationRepository extends Repository<Configuration> {
   async updateConfigurations(data: UpdateConfigurationDTO[]): Promise<Result<Configuration[] | null>> {
+    logger.debug('attempting to update configurations', data);
     const configs = await this.manager.transaction(async entityManger => {
       const configs = [];
       for (const config of data) {
