@@ -9,18 +9,15 @@ export class CreateConfigurationsTable1627074236346 implements MigrationInterfac
       columns: [
         {
           name: 'id',
-          type: 'varchar',
-          isPrimary: true
+          type: 'varchar'
         },
         {
           name: 'application_environment_id',
-          type: 'varchar',
-          isNullable: false
+          type: 'varchar'
         },
         {
           name: 'key',
-          type: 'varchar',
-          isNullable: false
+          type: 'varchar'
         },
         {
           name: 'value',
@@ -29,8 +26,13 @@ export class CreateConfigurationsTable1627074236346 implements MigrationInterfac
         },
         {
           name: 'data_type',
-          type: 'varchar',
+          type: 'smallint',
           isNullable: false
+        },
+        {
+          name: 'secret_path',
+          type: 'varchar',
+          isNullable: true
         },
         {
           name: 'created_at',
@@ -44,6 +46,9 @@ export class CreateConfigurationsTable1627074236346 implements MigrationInterfac
         }
       ]
     }));
+
+    // each configuration key must be unique per application environment
+    await queryRunner.createPrimaryKey(TABLE_NAME, ['key', 'application_environment_id']);
   }
 
   public async down (queryRunner: QueryRunner): Promise<void> {

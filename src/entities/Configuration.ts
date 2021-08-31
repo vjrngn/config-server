@@ -1,26 +1,32 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { ConfigDataTypes } from '../repositories/enum/config-data-types';
 import { ApplicationEnvironment } from './ApplicationEnvironment';
 
 @Entity('configurations')
 export class Configuration {
-    @PrimaryColumn()
-    id: string;
+  @Column({ update: false })
+  id: string;
 
-    @Column()
-    key: string;
+  @PrimaryColumn({ name: 'application_environment_id', update: false })
+  environment_id: string;
 
-    @Column()
-    value: string;
+  @PrimaryColumn()
+  key: string;
 
-    @Column({ name: 'data_type' })
-    dataType: string;
+  @Column()
+  value: string;
 
-    @CreateDateColumn({ type: 'timestamp' })
-    created_at: Date
+  @Column({ name: 'data_type', type: 'smallint' })
+  dataType: ConfigDataTypes;
 
-    @UpdateDateColumn({ type: 'timestamp' })
-    updated_at: Date
+  @Column({ name: 'secret_path', nullable: true })
+  secretPath: string;
 
-    @ManyToOne(() => ApplicationEnvironment)
-    environment: ApplicationEnvironment;
+  @CreateDateColumn({ type: 'timestamp' })
+  created_at: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updated_at: Date;
+
+  environment: ApplicationEnvironment;
 }

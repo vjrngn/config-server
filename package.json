@@ -7,9 +7,11 @@
     "start": "tsc && node dist/server.js",
     "start:dev": "nodemon src/server.ts",
     "test": "mocha",
+    "test:only": "mocha -g",
     "migration:create": "typeorm migration:create --name",
     "migration:run": "ts-node --transpile-only ./node_modules/typeorm/cli.js migration:run",
-    "migration:revert": "ts-node --transpile-only ./node_modules/typeorm/cli.js migration:revert"
+    "migration:revert": "ts-node --transpile-only ./node_modules/typeorm/cli.js migration:revert",
+    "make": "hygen"
   },
   "dependencies": {
     "dotenv": "^8.2.0",
@@ -42,6 +44,7 @@
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
+    "expect": "^27.1.0",
     "hygen": "^6.1.0",
     "mocha": "^8.3.2",
     "nodemon": "^2.0.7",

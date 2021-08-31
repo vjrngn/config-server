@@ -4,10 +4,10 @@ import { v4 } from 'uuid';
 import { Application } from '../entities/Application';
 import { ApplicationEnvironment } from '../entities/ApplicationEnvironment';
 import { Result } from '../result';
-import { CreateApplicationDTO } from './dto/create-application-dto';
+import { CreateApplicationDTO } from './dto/application/create-application-dto';
 import logger from '../logging/logger';
 import { UNIQUE_CONSTRAINT } from './sql-codes';
-import { UpdateApplicationDTO } from './dto/update-application-dto';
+import { UpdateApplicationDTO } from './dto/application/update-application-dto';
 
 @EntityRepository(Application)
 export class ApplicationRepository extends Repository<Application> {

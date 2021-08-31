@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+// @ts-ignore
 import { connect } from '../utils/utils';
 import { GenericContainer, StartedTestContainer } from 'testcontainers';
 import { Connection, getConnection } from 'typeorm';

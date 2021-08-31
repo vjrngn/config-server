@@ -2,7 +2,7 @@
 import createError from 'http-errors';
 import express from 'express';
 import path from 'path';
-import { connect } from './database/database';
+import { connect } from './database';
 import { ApplicationConfiguration } from './config/config';
 
 const app = express();
