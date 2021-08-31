@@ -7,6 +7,7 @@ import { Configuration } from '../../src/entities/Configuration';
 import { ApplicationRepository } from '../../src/repositories/application-repository';
 import { ConfigurationRepository } from '../../src/repositories/configuration-repository';
 import { ConfigDataTypes } from '../../src/repositories/enum/config-data-types';
+import { Result } from '../../src/result';
 import { connect } from '../utils/utils';
 
 describe('ConfigurationRepository', function () {
@@ -41,19 +42,27 @@ describe('ConfigurationRepository', function () {
 
   beforeEach(async () => {
     await repository.manager.transaction(async (entityManager) => {
-      await entityManager.clear(ApplicationEnvironment);
-      await entityManager.clear(Application);
-      await entityManager.clear(Configuration);
+      await entityManager.delete(ApplicationEnvironment, {});
+      await entityManager.delete(Application, {});
+      await entityManager.delete(Configuration, {});
     });
   });
 
+  async function createTestApplication(options?: {
+    data: any;
+  }): Promise<Result<Application | null>> {
+    const data = {
+      teamId: 'some-team-id',
+      name: 'test application',
+      environments: [{ name: 'staging' }]
+    };
+
+    return applicationRepository.createApplication(options ? options!.data : data);
+  }
+
   describe('Configuration Creation', function () {
     it('should create configruations for an environment', async function () {
-      const { data: application } = await applicationRepository.createApplication({
-        teamId: 'some-team-id',
-        name: 'test application',
-        environments: [{ name: 'staging' }]
-      });
+      const { data: application } = await createTestApplication();
       const { data: configurations } = await repository.updateConfigurations([{
         key: 'API_KEY',
         value: 'some secret api key',
@@ -74,11 +83,7 @@ describe('ConfigurationRepository', function () {
     });
 
     it('should update existing configurations', async function () {
-      const { data: application } = await applicationRepository.createApplication({
-        teamId: 'some-team-id',
-        name: 'test application',
-        environments: [{ name: 'staging' }]
-      });
+      const { data: application } = await createTestApplication();
       // Given a key exists
       const { data: existing } = await repository.updateConfigurations([{
         key: 'API_KEY',
@@ -112,13 +117,63 @@ describe('ConfigurationRepository', function () {
       expect(actualMergedRecord).toEqual(expect.objectContaining(expectedMergedRecord));
     });
 
-    it('should return error if key is null or empty', async function () {
+    it('should return error if key is empty', async function () {
+      const { data: application } = await createTestApplication();
+      const firstResult = await repository.updateConfigurations([{
+        key: '',
+        value: 'some secret',
+        dataType: ConfigDataTypes.STRING,
+        environmentId: application!.environments[0].id,
+        secretPath: 'path/to/secret/store'
+      }]);
+
+      expect(firstResult.error?.message).toEqual('key is required');
+
+      const secondResult = await repository.updateConfigurations([{
+        key: '    ',
+        value: 'some secret',
+        dataType: ConfigDataTypes.STRING,
+        environmentId: application!.environments[0].id,
+        secretPath: 'path/to/secret/store'
+      }]);
+
+      expect(secondResult.error?.message).toEqual('key is required');
     });
 
-    it('should return error if data type is null or empty', async function () { });
+    it('should return error if environment ID is empty', async function () {
+      const firstResult = await repository.updateConfigurations([{
+        key: 'some-key',
+        value: 'some secret',
+        dataType: ConfigDataTypes.STRING,
+        environmentId: '',
+        secretPath: 'path/to/secret/store'
+      }]);
 
-    it('should return error if environment ID is empty or null', async function () { });
+      expect(firstResult.error?.message).toEqual('environment ID is required');
 
-    it('should return error if environment is not found', async function () { });
+      const secondResult = await repository.updateConfigurations([{
+        key: 'some-key',
+        value: 'some secret',
+        dataType: ConfigDataTypes.STRING,
+        environmentId: '  ',
+        secretPath: 'path/to/secret/store'
+      }]);
+
+      expect(secondResult.error?.message)
+        .toEqual('environment ID is required');
+    });
+
+    it('should return error if environment is not found', async function () {
+      const result = await repository.updateConfigurations([{
+        key: 'some-key',
+        value: 'some secret',
+        dataType: ConfigDataTypes.STRING,
+        environmentId: 'some-env-id',
+        secretPath: 'path/to/secret/store'
+      }]);
+
+      expect(result.error!.message)
+        .toEqual('environment ID provided does not exist');
+    });
   });
 });

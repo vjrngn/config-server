@@ -6,7 +6,7 @@ import { ApplicationEnvironment } from '../entities/ApplicationEnvironment';
 import { Result } from '../result';
 import { CreateApplicationDTO } from './dto/application/create-application-dto';
 import logger from '../logging/logger';
-import { UNIQUE_CONSTRAINT } from './sql-codes';
+import { UNIQUE_CONSTRAINT_VIOLATION } from './sql-codes';
 import { UpdateApplicationDTO } from './dto/application/update-application-dto';
 
 @EntityRepository(Application)
@@ -48,7 +48,7 @@ export class ApplicationRepository extends Repository<Application> {
       return result;
     } catch (e) {
       logger.error('Exception creating application', e);
-      if (e.code === UNIQUE_CONSTRAINT) {
+      if (e.code === UNIQUE_CONSTRAINT_VIOLATION) {
         return new Result(null, {
           message: `Application with name ${data.name} exists.`
         });

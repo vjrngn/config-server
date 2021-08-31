@@ -4,13 +4,13 @@ import { ApplicationEnvironment } from './ApplicationEnvironment';
 
 @Entity('configurations')
 export class Configuration {
-  @Column({ update: false })
+  @PrimaryColumn({ update: false })
   id: string;
 
-  @PrimaryColumn({ name: 'application_environment_id', update: false })
+  @Column({ name: 'application_environment_id', update: false })
   environment_id: string;
 
-  @PrimaryColumn()
+  @Column()
   key: string;
 
   @Column()
