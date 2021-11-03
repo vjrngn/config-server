@@ -89,7 +89,7 @@ export class ConfigurationRepository extends Repository<Configuration> {
       });
 
       return new Result(configs, null);
-    } catch (e) {
+    } catch (e: any) {
       if (e.code === FOREIGN_KEY_CONSTRAINT_VIOLATION) {
         logger.error('environment ID not found', {
           exception: e,

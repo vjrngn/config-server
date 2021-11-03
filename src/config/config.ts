@@ -10,6 +10,7 @@ export interface ApplicationConfiguration {
     username: string | undefined;
     password: string | undefined;
     name: string | undefined;
+    schema: string;
   };
   environment?: string;
 }
@@ -20,7 +21,8 @@ export const config: ApplicationConfiguration = {
     port: parseInt(DB_PORT!),
     username: DB_USER,
     password: DB_PASSWORD,
-    name: DB_NAME
+    name: DB_NAME,
+    schema: 'public'
   },
   environment: APP_ENV
 };

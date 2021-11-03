@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { createConnection, Connection } from 'typeorm';
 import { ApplicationConfiguration } from '../config/config';
 
@@ -13,7 +14,7 @@ export function connect (config: ApplicationConfiguration): Promise<Connection> 
     username,
     password,
     database: name,
-    entities: [__dirname, '../entities/*.ts'],
+    entities: [join(__dirname, '../entities/*.ts')],
     logging: environment === 'dev'
   });
 }
